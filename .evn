@@ -1,0 +1,8 @@
+TEST_JWT_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3OTI0MTY2MDIsInN1YiI6IjEifQ.-pWbKlT62qz1lKSzFl0CPc1gVxFD_3xIC1jk7BvJaVY
+# .env (корень orderflow/)
+SECRET_KEY=super-secret-key-change-in-production-abc123
+DATABASE_URL_AUTH=postgresql+asyncpg://orderflow:orderflow_secret@localhost:5432/orderflow_auth
+DATABASE_URL_ORDERS=postgresql+asyncpg://orderflow:orderflow_secret@localhost:5432/orderflow_orders
+RABBITMQ_URL=amqp://orderflow:orderflow_secret@localhost:5672/
+
+
