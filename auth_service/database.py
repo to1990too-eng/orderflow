@@ -5,7 +5,7 @@ from auth_service.config import settings
 
 # Создаём асинхронный движок
 engine = create_async_engine(
-    settings.database_url,
+    settings.database_url_auth,
     echo=True,          # Логирование SQL — удобно на старте, потом выключи
     pool_pre_ping=True, # Проверка соединения перед использованием
 )

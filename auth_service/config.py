@@ -8,7 +8,7 @@ ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
 
 class Settings(BaseSettings):
     # База данных
-    database_url: str = "postgresql+asyncpg://orderflow:orderflow_secret@localhost:5432/orderflow_auth"
+    database_url_auth: str = "postgresql+asyncpg://orderflow:orderflow_secret@localhost:5432/orderflow_auth"
 
     # JWT
     # secret_key: str  # Берется из .env

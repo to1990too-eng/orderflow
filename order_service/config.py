@@ -3,20 +3,17 @@ from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# Явный путь к .env в корне проекта
 ENV_FILE = Path(__file__).resolve().parents[1] / ".env"
 
 class Settings(BaseSettings):
-    # База данных
-    database_url: str = "postgresql+asyncpg://orderflow:orderflow_secret@localhost:5432/orderflow_orders"
+    # Заменили localhost на postgres
+    database_url_orders: str = "postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_orders"
 
-    # JWT
-    # secret_key: str  # Берется из .env
     secret_key: str = "super-secret-key-change-in-production-abc123"
     algorithm: str = "HS256"
 
-    # RabbitMQ
-    rabbitmq_url: str = "amqp://orderflow:orderflow_secret@localhost:5672/"
+    # Заменили localhost на rabbitmq
+    rabbitmq_url: str = "amqp://orderflow:orderflow_secret@rabbitmq:5672/"
     queue_name: str = "new_orders"
 
     model_config = SettingsConfigDict(

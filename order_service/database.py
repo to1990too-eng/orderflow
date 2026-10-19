@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from order_service.config import settings
 
-engine = create_async_engine(settings.database_url, echo=True, pool_pre_ping=True)
+engine = create_async_engine(settings.database_url_orders, echo=True, pool_pre_ping=True)
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 async def get_db() -> AsyncSession:

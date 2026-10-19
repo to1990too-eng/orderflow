@@ -3,6 +3,7 @@ version: "3.8"
 services:
   postgres:
     image: postgres:16-alpine
+    container_name: orderflow-postgres
     environment:
       POSTGRES_USER: orderflow
       POSTGRES_PASSWORD: orderflow_secret
@@ -11,7 +12,6 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Добавляем скрипт для создания второй базы
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U orderflow"]
@@ -21,6 +21,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    container_name: orderflow-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: orderflow
       RABBITMQ_DEFAULT_PASS: orderflow_secret
@@ -28,18 +29,22 @@ services:
       - "5672:5672"
       - "15672:15672"
     healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      # Используем ping, так как check_port_connectivity может не работать в alpine-версии
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
+      # Даем RabbitMQ 90 секунд на запуск, прежде чем начинать проверки
+      start_period: 90s
 
   auth_service:
     build: .
+    container_name: orderflow-auth
     command: uvicorn auth_service.main:app --host 0.0.0.0 --port 8001
     ports:
       - "8001:8001"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_auth
+      - DATABASE_URL_AUTH=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_auth
       - SECRET_KEY=super-secret-key-change-in-production-abc123
     depends_on:
       postgres:
@@ -47,11 +52,12 @@ services:
 
   order_service:
     build: .
+    container_name: orderflow-orders
     command: uvicorn order_service.main:app --host 0.0.0.0 --port 8002
     ports:
       - "8002:8002"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_orders
+      - DATABASE_URL_ORDERS=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_orders
       - SECRET_KEY=super-secret-key-change-in-production-abc123
       - RABBITMQ_URL=amqp://orderflow:orderflow_secret@rabbitmq:5672/
     depends_on:
@@ -62,6 +68,7 @@ services:
 
   notification_service:
     build: .
+    container_name: orderflow-notifications
     command: python -m notification_service.main
     environment:
       - RABBITMQ_URL=amqp://orderflow:orderflow_secret@rabbitmq:5672/
