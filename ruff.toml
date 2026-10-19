@@ -1,0 +1,21 @@
+# ruff.toml
+target-version = "py311"
+line-length = 88
+
+# Исключаем папки, которые нам не нужно проверять
+exclude = [
+    ".venv",
+    "__pycache__",
+    ".git",
+    "migrations",
+]
+
+[lint]
+# Включаем базовые правила (PEP 8, сортировка импортов и т.д.)
+select = ["E", "F", "I"]
+# Игнорируем слишком длинные строки (чтобы не ругался на длинные URL)
+ignore = ["E501"]
+
+[lint.isort]
+# Заставляем ruff правильно группировать импорты
+known-first-party = ["auth_service", "order_service", "notification_service"]
