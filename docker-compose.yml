@@ -1,18 +1,18 @@
-# docker-compose.yml
 version: "3.8"
 
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: orderflow_postgres
     environment:
       POSTGRES_USER: orderflow
       POSTGRES_PASSWORD: orderflow_secret
-      POSTGRES_DB: orderflow_auth  # Временно одна БД, позже разделим или создадим ещё
+      POSTGRES_DB: orderflow_auth
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # Добавляем скрипт для создания второй базы
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U orderflow"]
       interval: 5s
@@ -21,21 +21,54 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management-alpine
-    container_name: orderflow_rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: orderflow
       RABBITMQ_DEFAULT_PASS: orderflow_secret
     ports:
-      - "5672:5672"    # AMQP порт (для aio-pika)
-      - "15672:15672"  # Веб-интерфейс
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - "5672:5672"
+      - "15672:15672"
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  auth_service:
+    build: .
+    command: uvicorn auth_service.main:app --host 0.0.0.0 --port 8001
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_auth
+      - SECRET_KEY=super-secret-key-change-in-production-abc123
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  order_service:
+    build: .
+    command: uvicorn order_service.main:app --host 0.0.0.0 --port 8002
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://orderflow:orderflow_secret@postgres:5432/orderflow_orders
+      - SECRET_KEY=super-secret-key-change-in-production-abc123
+      - RABBITMQ_URL=amqp://orderflow:orderflow_secret@rabbitmq:5672/
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
+  notification_service:
+    build: .
+    command: python -m notification_service.main
+    environment:
+      - RABBITMQ_URL=amqp://orderflow:orderflow_secret@rabbitmq:5672/
+      - ORDER_SERVICE_URL=http://order_service:8002
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
 volumes:
   postgres_data:
-  rabbitmq_data:
