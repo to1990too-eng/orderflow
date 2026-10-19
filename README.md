@@ -15,5 +15,5 @@
 
 1. Склонируйте репозиторий:
    ```bash
-   git clone https://github.com/ВАШ_НИК/orderflow.git
+   git clone https://github.com/to1990too-eng/orderflow.git
    cd orderflow
