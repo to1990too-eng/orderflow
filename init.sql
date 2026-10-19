@@ -1,1 +1,1 @@
-CREATE DATABASE orderflow_orders;
+CREATE DATABASE orderflow_orders OWNER orderflow;
