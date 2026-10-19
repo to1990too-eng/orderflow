@@ -1,7 +1,10 @@
 # order_service/schemas.py
-from pydantic import BaseModel
 from datetime import datetime
+
+from pydantic import BaseModel
+
 from order_service.models import OrderStatus
+
 
 class OrderCreate(BaseModel):
     item_name: str

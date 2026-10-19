@@ -1,6 +1,8 @@
 # auth_service/schemas.py
-from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
+
+from pydantic import BaseModel, EmailStr, Field
+
 
 class UserRegister(BaseModel):
     email: EmailStr

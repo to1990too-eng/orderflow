@@ -1,5 +1,6 @@
 # auth_service/database.py
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from auth_service.config import settings
 
 # Создаём асинхронный движок

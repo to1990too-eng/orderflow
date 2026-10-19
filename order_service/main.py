@@ -1,10 +1,13 @@
 # order_service/main.py
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
+from order_service.api.orders import router as orders_router
 from order_service.database import engine
 from order_service.models import Base
-from order_service.api.orders import router as orders_router
-from order_service.rabbit import init_rabbit, close_rabbit
+from order_service.rabbit import close_rabbit, init_rabbit
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

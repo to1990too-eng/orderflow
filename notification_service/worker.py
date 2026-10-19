@@ -1,8 +1,10 @@
 # notification_service/worker.py
-import json
 import asyncio
+import json
+
 import aio_pika
 import httpx
+
 from notification_service.config import settings
 
 

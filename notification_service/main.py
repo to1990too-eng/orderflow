@@ -1,6 +1,8 @@
 # notification_service/main.py
 import asyncio
+
 from notification_service.worker import start_worker
+
 
 async def main():
     # Запускаем воркер и держим процесс активным

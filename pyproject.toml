@@ -1,0 +1,3 @@
+[tool.ruff.lint]
+# Игнорируем B008, так как это конфликтует с FastAPI Depends
+ignore = ["B008", "BLE001"]

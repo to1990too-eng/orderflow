@@ -1,5 +1,6 @@
 # order_service/config.py
 from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Явный путь к .env в корне проекта

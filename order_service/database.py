@@ -1,5 +1,6 @@
 # order_service/database.py
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+
 from order_service.config import settings
 
 engine = create_async_engine(settings.database_url, echo=True, pool_pre_ping=True)

@@ -1,11 +1,11 @@
 # auth_service/tests/test_auth.py
 import pytest
 import pytest_asyncio
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
-from auth_service.main import app
 from auth_service.database import get_db
+from auth_service.main import app
 from auth_service.models import Base
 
 # Используем SQLite в памяти для тестов

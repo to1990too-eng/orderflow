@@ -1,8 +1,10 @@
 # order_service/models.py
-from datetime import datetime
-from sqlalchemy import String, Integer, DateTime, func, Enum
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import enum
+from datetime import datetime
+
+from sqlalchemy import DateTime, Enum, Integer, String, func
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+
 
 class Base(DeclarativeBase):
     pass

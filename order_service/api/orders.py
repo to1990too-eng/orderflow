@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from order_service.database import get_db
 from order_service.models import Order, OrderStatus
+from order_service.rabbit import publish_order_created
 from order_service.schemas import OrderCreate, OrderResponse, OrderStatusUpdate
 from order_service.security import get_current_user_id
-from order_service.rabbit import publish_order_created
 
 router = APIRouter(prefix="/api/v1/orders", tags=["orders"])
 
@@ -46,7 +46,7 @@ async def list_orders(
 async def update_order_status(
     order_id: int,
     payload: OrderStatusUpdate,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db)
 ):
     # Внутренний эндпоинт — без JWT-защиты (вызывается notification_service)
     result = await db.execute(select(Order).where(Order.id == order_id))

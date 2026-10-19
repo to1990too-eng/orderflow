@@ -1,7 +1,9 @@
 # order_service/rabbit.py
 import json
+
 import aio_pika
-from aio_pika import Message, DeliveryMode
+from aio_pika import DeliveryMode, Message
+
 from order_service.config import settings
 
 _connection: aio_pika.RobustConnection | None = None
@@ -20,6 +22,7 @@ async def close_rabbit() -> None:
     if _connection and not _connection.is_closed:
         await _connection.close()
         print("[RabbitMQ] Connection closed")
+        _connection = None
 
 async def publish_order_created(order_id: int, user_id: int, item_name: str) -> None:
     if _channel is None:

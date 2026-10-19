@@ -1,11 +1,12 @@
 # order_service/tests/test_orders.py
-import pytest
 from unittest.mock import AsyncMock, patch
-from httpx import AsyncClient, ASGITransport
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from order_service.main import app
+import pytest
+from httpx import ASGITransport, AsyncClient
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
 from order_service.database import get_db
+from order_service.main import app
 from order_service.models import Base
 from order_service.security import get_current_user_id
 

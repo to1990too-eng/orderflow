@@ -1,9 +1,12 @@
 # auth_service/main.py
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
+
+from auth_service.api.auth import router as auth_router
 from auth_service.database import engine
 from auth_service.models import Base
-from auth_service.api.auth import router as auth_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
